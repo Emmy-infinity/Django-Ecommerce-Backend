@@ -11,7 +11,14 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
-
+class Product(models.Model):
+    name=models.CharField(max_length=200)
+    price=models.DecimalField(max_digits=10,decimal_places=2)
+    description=models.TextField()
+class ProductImage(models.Model):
+    product=models.ForeignKey(Product,related_name='images',on_delete=models.CASCADE)
+    image=models.ImageField(upload_to='products')
+    order=models.IntegerField(default=0)
 class UploadedImage(models.Model):
     image = models.ImageField(upload_to='images/' )
     title = models.CharField(max_length=100, blank=True)
