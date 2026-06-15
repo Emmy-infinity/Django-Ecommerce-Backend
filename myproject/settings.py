@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+
 from datetime import timedelta
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
@@ -96,14 +99,28 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-   "default": {
-       "ENGINE": 'django.db.backends.sqlite3',
-       "NAME" : 'db.sqlite3'
-       
- 
-   }
-}
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# 1. Fetch the Supabase connection string from Render environment variables
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # 2. Production: Use Supabase Postgres
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,  # Keeps database connections alive to improve speed
+            ssl_require=True   # Supabase forces encrypted SSL connections
+        )
+    }
+else:
+    # 3. Development: Fall back to local SQLite on your machine
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
