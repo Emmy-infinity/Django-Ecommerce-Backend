@@ -4,6 +4,7 @@ django-cors-headers
 djangorestframework
 djangorestframework-simplejwt
 PyJWT
+import dj_database_url
 pytz
 sqlparse
 psycopg2-binary
