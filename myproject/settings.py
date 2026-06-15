@@ -104,23 +104,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 1. Fetch the Supabase connection string from Render environment variables
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if DATABASE_URL:
-    # 2. Production: Use Supabase Postgres
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,  # Keeps database connections alive to improve speed
-            ssl_require=True   # Supabase forces encrypted SSL connections
-        )
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    # 3. Development: Fall back to local SQLite on your machine
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
+
+# Check if DATABASE_URL exists in environment variables (Render sets this)
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        ssl_require=True
+    )
 
 
 # Password validation
