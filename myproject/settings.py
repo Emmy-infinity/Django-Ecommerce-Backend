@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import cloudinary
 from pathlib import Path
 import os
 import dj_database_url
@@ -150,6 +150,12 @@ STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+cloudinary.config(
+    cloud_name = "dtll1o9u0",
+    api_key = "911334935982914",
+    api_secret = "**********",
+    secure = True
+)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
