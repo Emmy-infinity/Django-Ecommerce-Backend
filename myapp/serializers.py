@@ -20,14 +20,6 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "content", "created_at", "author"]
         extra_kwargs = {"author": {"read_only": True}}
 
-class UploadedImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=UploadedImage
-        fields=['name','image_file']
-        
-        
-        
-
 
 class SensorReadingSerializer(serializers.ModelSerializer):
     x = serializers.DateTimeField(source='timestamp', format='%Y-%m-%d %H:%M:%S')
