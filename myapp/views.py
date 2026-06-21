@@ -3,7 +3,7 @@ from rest_framework import generics
 
 
 from .serializers import SensorReadingSerializer,PhotoSerializer,UserSerializer, NoteSerializer,UploadedImageSerializer
-from .models import Note,UploadedImage,SensorReading
+from .models import Note,UploadedImage,SensorReading,Photo
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
@@ -112,7 +112,7 @@ class ImageListView(generics.ListAPIView):
 
 
 class ImageUploadView(generics.CreateAPIView):
-    queryset = UploadedImage.objects.all()
+    queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     parser_classes = (MultiPartParser, FormParser)   # required for file uploads
     # If you want public access (remove auth 401):
