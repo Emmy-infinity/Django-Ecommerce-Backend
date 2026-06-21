@@ -120,12 +120,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # BAD: SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
 # GOOD: Forces PostgreSQL in production, keeps SQLite only for local development
-if os.environ.get('RENDER'):
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    if not DATABASE_URL:
-        raise ValueError("DATABASE_URL environment variable is missing!")
-else:
-    DATABASE_URL = 'sqlite:///local.db'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'my_db_name',
+        'USER': 'my_db_user',
+        'PASSWORD': 'my_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
 
 
 # Password validation
