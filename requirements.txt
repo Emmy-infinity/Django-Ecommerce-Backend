@@ -2,6 +2,8 @@ asgiref
 Django
 django-cors-headers
 djangorestframework
+cloudinary
+django-cloudinary-storage
 djangorestframework-simplejwt
 PyJWT
 dj_database_url
