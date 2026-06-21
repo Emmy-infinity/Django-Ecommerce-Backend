@@ -51,11 +51,11 @@ SIMPLE_JWT = {
 
 
 # Add Cloudinary credentials
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'your_cloud_name',
-    'API_KEY': 'your_api_key',
-    'API_SECRET': 'your_api_secret',
-}
+#CLOUDINARY_STORAGE = {
+ #   'CLOUD_NAME': 'your_cloud_name',
+  #  'API_KEY': 'your_api_key',
+   # 'API_SECRET': 'your_api_secret',
+#}
 
 # Configure Django to use Cloudinary for media storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
