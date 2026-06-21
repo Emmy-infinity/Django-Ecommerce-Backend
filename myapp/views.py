@@ -98,8 +98,7 @@ class ChartDataView(APIView):
     
 
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import UploadedImage
-from .serializers import UploadedImageSerializer
+
 
 
 class ImageListView(generics.ListAPIView):
