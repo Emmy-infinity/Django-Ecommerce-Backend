@@ -116,14 +116,16 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 1. Fetch the Supabase connection string from Render environment variables
-DATABASE_URL = os.environ.get('DATABASE_URL')
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
-        conn_max_age=600
-    )
-}
+
+# BAD: SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+# GOOD: Forces PostgreSQL in production, keeps SQLite only for local development
+if os.environ.get('RENDER'):
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL environment variable is missing!")
+else:
+    DATABASE_URL = 'sqlite:///local.db'
 
 
 # Password validation
@@ -160,7 +162,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
 
