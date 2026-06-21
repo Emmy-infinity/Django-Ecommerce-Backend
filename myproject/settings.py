@@ -49,11 +49,24 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
+
+# Add Cloudinary credentials
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'your_cloud_name',
+    'API_KEY': 'your_api_key',
+    'API_SECRET': 'your_api_secret',
+}
+
+# Configure Django to use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = [
     "corsheaders",
+    'cloudinary_storage',
     "django.contrib.admin",
+    'cloudinary',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -61,6 +74,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "myapp",
     "rest_framework",
+    '
 ]
 
 MIDDLEWARE = [
@@ -147,15 +161,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-cloudinary.config(
-    cloud_name = "dtll1o9u0",
-    api_key = "911334935982914",
-    api_secret = "**********",
-    secure = True
-)
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': "dtll1o9u0",
+    'API_KEY': "911334935982914",
+    'API_SECRET': "**********",
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
