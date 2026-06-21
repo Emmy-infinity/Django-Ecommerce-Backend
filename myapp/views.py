@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import generics
 
 
-from .serializers import SensorReadingSerializer,PhotoSerializer,UserSerializer, NoteSerializer,UploadedImageSerializer
-from .models import Note,UploadedImage,SensorReading,Photo
+from .serializers import SensorReadingSerializer,PhotoSerializer,UserSerializer, NoteSerializer
+from .models import Note,SensorReading,Photo
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
@@ -103,8 +103,8 @@ from .serializers import UploadedImageSerializer
 
 
 class ImageListView(generics.ListAPIView):
-    queryset = UploadedImage.objects.all().order_by('-uploaded_at')
-    serializer_class = UploadedImageSerializer
+    queryset = Photo.objects.all().order_by('-uploaded_at')
+    serializer_class = PhotoSerializer
     permission_classes = [AllowAny]   #
     
     
@@ -121,23 +121,9 @@ class ImageUploadView(generics.CreateAPIView):
 
 
 
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
-from .models import Product
-from .serializers import ProductSerializer
 
-class ProductSearchView(ListAPIView):
-    serializer_class = ProductSerializer
-    permission_classes = [AllowAny]  # Public search endpoint
 
-    def get_queryset(self):
-        queryset = Product.objects.all().order_by('-created_at')
-        
-        # Extract the search term from URL query parameters (?q=iphone)
-        query = self.request.query_params.get('q', None)
-        
-        if query:
+
             # icontains handles case-insensitive substring matching
-            queryset = queryset.filter(title__icontains=query) | queryset.filter(description__icontains=query)
-            
+          
         return queryset
