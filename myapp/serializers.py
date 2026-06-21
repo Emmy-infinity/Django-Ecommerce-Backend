@@ -40,8 +40,3 @@ class SensorReadingSerializer(serializers.ModelSerializer):
         model = SensorReading
         fields = ['x', 'y']
         
-
-
-        
-        
-id','name','price','description','images']
