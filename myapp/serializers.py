@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Note,UploadedImage,SensorReading,ProductImage,Product
+from .models import Note,SensorReading
 
 
 # serializers.py
@@ -41,19 +41,7 @@ class SensorReadingSerializer(serializers.ModelSerializer):
         fields = ['x', 'y']
         
 
-class UploadedImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UploadedImage
-        fields = ['id', 'image', 'title', 'uploaded_at','description' ]
-        read_only_fields = ['id', 'uploaded_at']
+
         
         
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=ProductImage
-        fields=['images','order']
-class ProductSerializer(serializers.ModelSerializer):
-    images=ProductImageSerializer(many=True,read_only=True)
-    class Meta:
-        model=Product
-        fields=['id','name','price','description','images']
+id','name','price','description','images']
