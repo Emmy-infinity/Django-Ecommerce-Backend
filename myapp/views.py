@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import generics
 
 
-from .serializers import SensorReadingSerializer,UserSerializer, NoteSerializer,UploadedImageSerializer
+from .serializers import SensorReadingSerializer,PhotoSerializer,UserSerializer, NoteSerializer,UploadedImageSerializer
 from .models import Note,UploadedImage,SensorReading
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -113,7 +113,7 @@ class ImageListView(generics.ListAPIView):
 
 class ImageUploadView(generics.CreateAPIView):
     queryset = UploadedImage.objects.all()
-    serializer_class = UploadedImageSerializer
+    serializer_class = PhotoSerializer
     parser_classes = (MultiPartParser, FormParser)   # required for file uploads
     # If you want public access (remove auth 401):
     permission_classes = [AllowAny]
