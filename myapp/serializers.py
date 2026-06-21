@@ -3,6 +3,17 @@ from rest_framework import serializers
 from .models import Note,UploadedImage,SensorReading,ProductImage,Product
 
 
+# serializers.py
+
+from .models import Photo
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ['id', 'title', 'image']
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
