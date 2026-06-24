@@ -102,7 +102,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class ImageListView(generics.ListAPIView):
-    queryset = Photo.objects.all().order_by('id')
+    queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
     permission_classes = [AllowAny]   #
     
