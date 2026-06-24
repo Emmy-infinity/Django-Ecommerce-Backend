@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from pathlib import Path
 import os
 import dj_database_url
