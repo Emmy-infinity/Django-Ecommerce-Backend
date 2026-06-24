@@ -73,7 +73,7 @@ MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = [
-    "corsheaders",
+    
     'cloudinary_storage',
     "django.contrib.admin",
     'cloudinary',
@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "myapp",
     "rest_framework",
     
