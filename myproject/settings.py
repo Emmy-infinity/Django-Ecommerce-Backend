@@ -50,15 +50,17 @@ SIMPLE_JWT = {
 }
 
 
-# Add Cloudinary credentials
-#CLOUDINARY_STORAGE = {
- #   'CLOUD_NAME': 'your_cloud_name',
-  #  'API_KEY': 'your_api_key',
-   # 'API_SECRET': 'your_api_secret',
-#}
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# Set Cloudinary as the default storage handler for media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Configure Django to use Cloudinary for media storage
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 MEDIA_URL = '/media/'
 # Application definition
 
