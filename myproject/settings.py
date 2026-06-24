@@ -50,11 +50,17 @@ SIMPLE_JWT = {
 }
 
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# The Cloudinary SDK looks for this specific configuration
+cloudinary.config(
+    cloud_name = "marketplace", # Extracted from your traceback
+    api_key = "387833656525477", 
+    api_secret = "AmTSvrVHKiLlN2ArzFgctGx_-70",
+    secure = True
+)
 
 # Set Cloudinary as the default storage handler for media files
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
