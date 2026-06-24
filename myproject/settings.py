@@ -58,7 +58,7 @@ import cloudinary.api
 
 # The Cloudinary SDK looks for this specific configuration
 cloudinary.config(
-    cloud_name = "marketplace", # Extracted from your traceback
+    cloud_name = "dtll1o9u0", # Extracted from your traceback
     api_key = "387833656525477", 
     api_secret = "AmTSvrVHKiLlN2ArzFgctGx_-70",
     secure = True
