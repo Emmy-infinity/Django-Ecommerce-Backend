@@ -134,10 +134,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import dj_database_url
 import os
 
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
-}
+# settings.py
+import os
+from pathlib import Path
+import dj_database_url # Import the parsing package
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Dynamic Database Configuration
+DATABASES = {
+    'default': dj_database_url.config(
+        # Looks for Render's DATABASE_URL environment variable automatically
+        default=f"sqlite:///{os.path.join(BASE_DIR, 'db.sqlite3')}",
+        conn_max_age=600
+    )
+}
 
 
 
