@@ -7,12 +7,23 @@ from .models import Note,SensorReading
 
 from .models import Photo
 
+
+
 class PhotoSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Photo
-        fields = [ 'image']
+        fields = ['id', 'image']
 
-
+    def get_image(self, obj):
+        if obj.image:
+            url = obj.image.url
+            # Force the URL to start explicitly with https://
+            if url.startswith('//'):
+                return f"https:{url}"
+            return url
+        return None
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
