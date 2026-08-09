@@ -1,53 +1,38 @@
+from django.db import models
 from django.contrib.auth.models import User
-from rest_framework import serializers
-from .models import Note,SensorReading
+from cloudinary.models import CloudinaryField
+
+class Photo(models.Model):
+    # Option A: Keep CloudinaryField directly
+    image = CloudinaryField('image')
+    
+    # Option B (Recommended if using cloudinary_storage storage backend):
+    # image = models.ImageField(upload_to='photos/')
 
 
-# serializers.py
+class Note(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
 
-from .models import Photo
-
-
-
-class PhotoSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Photo
-        fields = ['id', 'image']
-
-    def get_image(self, obj):
-        if obj.image:
-            url = obj.image.url
-            # Force the URL to start explicitly with https://
-            if url.startswith('//'):
-                return f"https:{url}"
-            return url
-        return None
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "password"]
-        extra_kwargs = {"password": {"write_only": True}}
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+    def __str__(self):
+        return self.title
 
 
-class NoteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Note
-        fields = ["id", "title", "content", "created_at", "author"]
-        extra_kwargs = {"author": {"read_only": True}}
+class SensorReading(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    value = models.FloatField()
+
+    def __str__(self):
+        return f"{self.timestamp}: {self.value}"
 
 
-class SensorReadingSerializer(serializers.ModelSerializer):
-    x = serializers.DateTimeField(source='timestamp', format='%Y-%m-%d %H:%M:%S')
-    y = serializers.FloatField(source='value')
+class StockMarketReading(models.Model):
+    # Fixed auto_created=True to auto_now_add=True
+    timestamp = models.DateTimeField(auto_now_add=True)
+    value1 = models.FloatField()
+    value2 = models.FloatField()
 
-    class Meta:
-        model = SensorReading
-        fields = ['x', 'y']
-        
+    def __str__(self):
+        return f"{self.timestamp}: {self.value1} / {self.value2}"
