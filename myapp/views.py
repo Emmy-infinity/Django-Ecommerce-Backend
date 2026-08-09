@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
-
-
-from .serializers import SensorReadingSerializer,PhotoSerializer,UserSerializer, NoteSerializer
-from .models import Note,SensorReading,Photo
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import MultiPartParser, FormParser
+
+from .models import Note, SensorReading, Photo, StockMarketReading
+from .serializers import SensorReadingSerializer, UserSerializer, NoteSerializer, PhotoSerializer
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -19,7 +21,7 @@ class NoteListCreate(generics.ListCreateAPIView):
         if serializer.is_valid():
             serializer.save(author=self.request.user)
         else:
-            print(serializer.errors)  # Add this line for debugging
+            print(serializer.errors)
 
 
 class NoteDelete(generics.DestroyAPIView):
@@ -38,35 +40,30 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import  StockMarketReading
-
 class ChartDataView2(APIView):
-    def get(self,request):
-        readings=StockMarketReading.objects.all().order_by('timestamp')
+    def get(self, request):
+        readings = StockMarketReading.objects.all().order_by('timestamp')
         x = [r.timestamp.strftime('%Y-%m-%d %H:%M:%S') for r in readings]
-        y = [r.value for r in readings]
+        y1 = [r.value1 for r in readings]
+        y2 = [r.value2 for r in readings]
         chart_data = {
             "data": [
                 {
                     "x": x,
-                    "y": y,
+                    "y": y1,
                     "type": "scatter",
                     "mode": "lines+markers",
-                    "name": "Sensor",                }
+                    "name": "Stock Value 1",
+                }
             ],
             "layout": {
-                "title": "Sensor Data",
+                "title": "Stock Market Reading",
                 "xaxis": {"title": "Time"},
                 "yaxis": {"title": "Value"},
             }
         }
         return Response(chart_data)
-    
-    
-        
+
 
 class ChartDataView(APIView):
     def get(self, request):
@@ -91,38 +88,17 @@ class ChartDataView(APIView):
             }
         }
         return Response(chart_data)
-    
-    
-    
-    
-    
-
-from rest_framework.parsers import MultiPartParser, FormParser
 
 
-
+# Clean Cloudinary Photo Views
 class ImageListView(generics.ListAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
-    permission_classes = [AllowAny]   #
-    
-    
-    
+    permission_classes = [AllowAny]
 
 
 class ImageUploadView(generics.CreateAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
-    parser_classes = (MultiPartParser, FormParser)   # required for file uploads
-    # If you want public access (remove auth 401):
+    parser_classes = (MultiPartParser, FormParser)  # Required for handling raw image payloads
     permission_classes = [AllowAny]
-
-
-
-
-
-
-
-            # icontains handles case-insensitive substring matching
-          
-    
