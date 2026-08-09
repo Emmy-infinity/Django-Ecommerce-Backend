@@ -116,13 +116,25 @@ USE_I18N = True
 USE_TZ = True
 
 # Static & Media Files
+
+
+
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
+# Static & Media Files Configuration
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# Add these two lines to fix the crash:
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticCloudinaryStorage'
+
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
