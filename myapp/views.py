@@ -6,7 +6,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Note, SensorReading, Photo, StockMarketReading
-from .serializers import SensorReadingSerializer, UserSerializer, NoteSerializer, PhotoSerializer
+from .serializers import (
+    SensorReadingSerializer, 
+    UserSerializer, 
+    NoteSerializer, 
+    PhotoSerializer
+)
 
 
 class NoteListCreate(generics.ListCreateAPIView):
@@ -54,6 +59,13 @@ class ChartDataView2(APIView):
                     "type": "scatter",
                     "mode": "lines+markers",
                     "name": "Stock Value 1",
+                },
+                {
+                    "x": x,
+                    "y": y2,
+                    "type": "scatter",
+                    "mode": "lines+markers",
+                    "name": "Stock Value 2",
                 }
             ],
             "layout": {
@@ -90,7 +102,7 @@ class ChartDataView(APIView):
         return Response(chart_data)
 
 
-# Clean Cloudinary Photo Views
+# Cloudinary Photo Endpoints
 class ImageListView(generics.ListAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
@@ -100,5 +112,5 @@ class ImageListView(generics.ListAPIView):
 class ImageUploadView(generics.CreateAPIView):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
-    parser_classes = (MultiPartParser, FormParser)  # Required for handling raw image payloads
+    parser_classes = (MultiPartParser, FormParser)  # Required to handle image binaries
     permission_classes = [AllowAny]
