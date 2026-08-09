@@ -1,15 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-
-# models.py
-from django.db import models
 from cloudinary.models import CloudinaryField
 
 class Photo(models.Model):
+    # Option A: Keep CloudinaryField directly
+    image = CloudinaryField('image')
     
-    image = CloudinaryField('image') # Handles Cloudinary upload directly
-
+    # Option B (Recommended if using cloudinary_storage storage backend):
+    # image = models.ImageField(upload_to='photos/')
 
 
 class Note(models.Model):
@@ -29,10 +27,12 @@ class SensorReading(models.Model):
     def __str__(self):
         return f"{self.timestamp}: {self.value}"
 
+
 class StockMarketReading(models.Model):
-    timestamp=models.DateTimeField(auto_created=True)
-    value1=models.FloatField()
-    value2=models.FloatField()
-    
-    
-    
+    # Fixed auto_created=True to auto_now_add=True
+    timestamp = models.DateTimeField(auto_now_add=True)
+    value1 = models.FloatField()
+    value2 = models.FloatField()
+
+    def __str__(self):
+        return f"{self.timestamp}: {self.value1} / {self.value2}"
