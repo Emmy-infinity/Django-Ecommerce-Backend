@@ -12,6 +12,11 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ['id', 'image']
+        def get_image(self, obj):
+        if obj.image:
+            # .url extracts the full 'https://cloudinary.com...' web address
+            return obj.image.url
+        return None
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
