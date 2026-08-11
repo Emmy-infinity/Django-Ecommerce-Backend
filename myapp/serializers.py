@@ -13,10 +13,10 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ['id', 'image']
         def get_image(self, obj):
-        if obj.image:
-            # .url extracts the full 'https://cloudinary.com...' web address
-            return obj.image.url
-        return None
+            if obj.image:
+                # .url extracts the full 'https://cloudinary.com...' web address
+                return obj.image.url
+            return None
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
