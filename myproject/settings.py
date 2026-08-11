@@ -46,7 +46,7 @@ cloudinary.config(
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv("CLOUDINARY_CLOUD_NAME", "dtll1o9u0"),
     'API_KEY': os.getenv("CLOUDINARY_API_KEY", "387833656525477"),
-    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET","AmTSvrVHKiLlN2ArzFgctGx_-70"),
+    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
