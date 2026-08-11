@@ -37,17 +37,19 @@ import cloudinary.uploader
 import cloudinary.api
 
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", "dtll1o9u0"),
-    api_key=os.getenv("CLOUDINARY_API_KEY", "387833656525477"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True
 )
 
+# CLOUDINARY_STORAGE is still needed for the django-cloudinary-storage library,
+# but it will automatically use the CLOUDINARY_URL if you leave it empty
+# or remove the manual key/secret entries.
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv("CLOUDINARY_CLOUD_NAME", "dtll1o9u0"),
-    'API_KEY': os.getenv("CLOUDINARY_API_KEY", "387833656525477"),
-    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
+    # If using CLOUDINARY_URL, you can leave this dictionary empty
+    # or just include non-credential settings.
 }
+
+
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
