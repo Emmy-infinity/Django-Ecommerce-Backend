@@ -54,6 +54,8 @@ CLOUDINARY_STORAGE = {
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 INSTALLED_APPS = [
+    'unfold', # 🌟 PLACED FIRST TO OVERRIDE THE ADMIN UI
+    'unfold.contrib.filters', # Optional modern filter cards
     'cloudinary_storage',
     "django.contrib.admin",
     'cloudinary',
