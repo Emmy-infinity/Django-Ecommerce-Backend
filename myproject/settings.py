@@ -67,7 +67,10 @@ INSTALLED_APPS = [
     'unfold', # 🌟 PLACED FIRST TO OVERRIDE THE ADMIN UI
     'unfold.contrib.filters', # Optional modern filter cards
     'cloudinary_storage',
-    "django.contrib.admin",
+    'django.contrib.admin',
+    # ...
+    'myapp.apps.MyappConfig', 
+
     'cloudinary',
     "django.contrib.auth",
     "django.contrib.contenttypes",
