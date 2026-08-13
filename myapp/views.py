@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from rest_framework import viewsets, permissions, parser_classes
+
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 from .models import Note, SensorReading, Photo, StockMarketReading
@@ -16,21 +16,25 @@ from .serializers import (
 )
 
 
+
+#  PASTE THIS INSTEAD:
+from rest_framework import viewsets, permissions
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from .models import Product, Photo
+from .serializers import ProductSerializer, PhotoSerializer
+
 class ProductViewSet(viewsets.ModelViewSet):
     """
     Handles listing, creating, retrieving, updating, and deleting products.
     """
     queryset = Product.objects.all().order_by('-created_at')
     serializer_class = ProductSerializer
-    
-    # Allow public reading (for buyers), but require login to create/edit listings
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
-    # Support both standard JSON data and form data submissions
+    # Class-based viewsets use the property directly without an import wrapper!
     parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
-        # Automatically set the seller to the currently logged-in React user
         serializer.save(seller=self.request.user)
 
 
@@ -42,17 +46,22 @@ class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
-    # CRUCIAL: MultiPartParser allows Django to receive binary file streams from React FormData
+    # MultiPartParser handles your incoming React image binaries perfectly
     parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
-        # Read the raw product ID sent alongside the image file in React FormData
         product_id = self.request.data.get('product')
         if product_id:
-            product = Product.objects.get(id=product_id)
-            serializer.save(product=product)
+            try:
+                product = Product.objects.get(id=product_id)
+                serializer.save(product=product)
+            except Product.DoesNotExist:
+                serializer.save()
         else:
             serializer.save()
+
+
+
 
 
 class NoteListCreate(generics.ListCreateAPIView):
