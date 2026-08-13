@@ -8,15 +8,67 @@ from .models import Note, SensorReading, Photo  # Import Photo model here, do no
 
 
 
+
+from rest_framework import serializers
+from .models import Product, Photo
+
 class PhotoSerializer(serializers.ModelSerializer):
+    # Use a SerializerMethodField to ensure Cloudinary always outputs clean absolute URLs
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Photo
-        fields = ['id', 'image']
-    def get_image(self, obj):
+        # Exclude the direct product relation field to avoid cluttering the frontend arrays
+        fields = ['id', 'image_url']
+
+    def get_image_url(self, obj):
         if obj.image:
-                # .url extracts the full 'https://cloudinary.com...' web address
+            # Safely extract the full 'https://cloudinary.com...' string
+            try:
                 return obj.image.url
+            except AttributeError:
+                # Fallback if it is stored as a raw string format in the database row
+                return str(obj.image)
         return None
+
+class ProductSerializer(serializers.ModelSerializer):
+    # 'photos' matches the related_name='photos' string defined inside your Photo ForeignKey model
+    # read_only=True ensures image upload logic is handled on its own separate endpoint
+    photos = PhotoSerializer(many=True, read_only=True)
+    
+    # Human-readable displays for choices fields on the React frontend
+    condition_display = serializers.CharField(source='get_condition_display', read_only=True)
+    item_location_display = serializers.CharField(source='get_item_location_display', read_only=True)
+    
+    # Display the seller's username instead of just a raw database integer number
+    seller_username = serializers.CharField(source='seller.username', read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            'id', 
+            'seller', 
+            'seller_username',
+            'title', 
+            'description', 
+            'price', 
+            'condition', 
+            'condition_display', 
+            'stock_count', 
+            'item_location', 
+            'item_location_display', 
+            'seller_location_details', 
+            'photos', # Returns an array of nested photo objects
+            'created_at'
+        ]
+        read_only_fields = ['id', 'seller', 'created_at']
+
+
+
+
+
+
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
