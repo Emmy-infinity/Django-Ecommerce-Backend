@@ -21,9 +21,7 @@ def force_sync_database_tables(sender, **kwargs):
     except Exception as e:
         print(f"⚠️ Initialization bypass notice: {e}")
 
-# This hooks into Django's startup sequence and executes the build commands automatically
-if 'runserver' in sys.argv or 'gunicorn' in sys.argv or 'uvicorn' in sys.argv or 'wsgi' in sys.argv:
-    post_migrate.connect(force_sync_database_tables)
+
 
 
 
