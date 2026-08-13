@@ -153,3 +153,11 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 # If you want to allow all origins safely while supporting credentials or specific testing:
 # CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Enables compression and aggressive caching for fast loading speeds
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
