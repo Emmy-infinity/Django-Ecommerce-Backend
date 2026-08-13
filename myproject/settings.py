@@ -4,6 +4,23 @@ from datetime import timedelta
 import dj_database_url
 from dotenv import load_dotenv
 
+
+from django.db.models.signals import post_migrate
+
+def force_sync_database_tables(sender, **kwargs):
+    from django.core.management import call_command
+    print("🚀 Triggering deep database table auto-generation routine...")
+    try:
+        call_command('makemigrations', 'myapp', interactive=False)
+        call_command('migrate', 'myapp', interactive=False)
+    except Exception as e:
+        print(f"⚠️ Initialization bypass notice: {e}")
+
+# This hooks into Django's startup sequence and executes the build commands automatically
+if 'runserver' in sys.argv or 'gunicorn' in sys.argv or 'uvicorn' in sys.argv or 'wsgi' in sys.argv:
+    post_migrate.connect(force_sync_database_tables)
+
+
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
