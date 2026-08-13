@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'django.contrib.admin',
     # ...
-    'myapp.apps.MyappConfig', 
+    
 
     'cloudinary',
     "django.contrib.auth",
@@ -78,8 +78,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "myapp",
+    
     "rest_framework",
+    'myapp.apps.MyappConfig', 
 ]
 
 MIDDLEWARE = [
