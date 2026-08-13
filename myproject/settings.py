@@ -7,93 +7,6 @@ from dotenv import load_dotenv
 
 
 
-import sys
-from django.db import connection
-
-def emergency_raw_sql_table_sync():
-    """
-    Directly force-injects raw SQL schemas into the PostgreSQL cluster,
-    including essential foreign key indexing parameters to satisfy 
-    the constraints of Django's internal admin validation lookups.
-    """
-    print("🛠️ Initiating complete raw database table synchronization script...")
-    with connection.cursor() as cursor:
-        try:
-            # 1. Force create the primary core Product table schema structure
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS "myapp_product" (
-                    "id" bigserial NOT NULL PRIMARY KEY,
-                    "title" varchar(255) NOT NULL,
-                    "description" text NOT NULL,
-                    "price" numeric(12, 2) NOT NULL,
-                    "condition" varchar(10) NOT NULL,
-                    "stock_count" integer NOT NULL CHECK ("stock_count" >= 0),
-                    "item_location" varchar(10) NOT NULL,
-                    "seller_location_details" varchar(255) NOT NULL,
-                    "created_at" timestamptz NOT NULL,
-                    "seller_id" integer NOT NULL
-                );
-            """)
-            
-            # 2. Securely attach the missing Admin User constraint tracking index
-            cursor.execute("""
-                DO $$
-                BEGIN
-                    IF NOT EXISTS (
-                        SELECT 1 FROM information_schema.table_constraints 
-                        WHERE constraint_name = 'myapp_product_seller_id_fk_auth_user_id'
-                    ) THEN
-                        ALTER TABLE "myapp_product" 
-                        ADD CONSTRAINT "myapp_product_seller_id_fk_auth_user_id" 
-                        FOREIGN KEY ("seller_id") REFERENCES "auth_user" ("id") 
-                        DEFERRABLE INITIALLY DEFERRED;
-                    END IF;
-                END $$;
-            """)
-            print("✅ Core 'myapp_product' and User foreign keys verified successfully!")
-            
-            # 3. Force create the secondary relational Photo layout table schema
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS "myapp_photo" (
-                    "id" bigserial NOT NULL PRIMARY KEY,
-                    "image" varchar(255) NOT NULL,
-                    "created_at" timestamptz NOT NULL,
-                    "product_id" bigint NULL
-                );
-            """)
-            
-            # 4. Attach the relational bridge constraint linking Photos back to Products
-            cursor.execute("""
-                DO $$
-                BEGIN
-                    IF NOT EXISTS (
-                        SELECT 1 FROM information_schema.table_constraints 
-                        WHERE constraint_name = 'myapp_photo_product_id_fk_myapp_product_id'
-                    ) THEN
-                        ALTER TABLE "myapp_photo" 
-                        ADD CONSTRAINT "myapp_photo_product_id_fk_myapp_product_id" 
-                        FOREIGN KEY ("product_id") REFERENCES "myapp_product" ("id") 
-                        DEFERRABLE INITIALLY DEFERRED;
-                    END IF;
-                END $$;
-            """)
-            print("✅ Secondary 'myapp_photo' relationship nodes verified successfully!")
-            
-        except Exception as e:
-            print(f"⚠️ Raw database mapping bypass notice: {e}")
-
-# This forces the script to execute immediately when Gunicorn initializes your web workers
-if any(cmd in sys.argv for cmd in ['runserver', 'gunicorn', 'uvicorn', 'wsgi']):
-    from django.core.signals import request_started
-    
-    def run_raw_sync_once(sender, **kwargs):
-        emergency_raw_sql_table_sync()
-        request_started.disconnect(run_raw_sync_once)
-        
-    request_started.connect(run_raw_sync_once)
-
-
-
 
 
 
@@ -111,6 +24,89 @@ def force_sync_database_tables(sender, **kwargs):
 # This hooks into Django's startup sequence and executes the build commands automatically
 if 'runserver' in sys.argv or 'gunicorn' in sys.argv or 'uvicorn' in sys.argv or 'wsgi' in sys.argv:
     post_migrate.connect(force_sync_database_tables)
+
+
+
+# =====================================================================
+# EMERGENCY DATABASE FORCE-SYNC (BROWSER-ONLY CONFIGURATION)
+# =====================================================================
+import os
+from django.db import connection
+
+def execute_immediate_table_sync():
+    """
+    Executes immediately when settings.py compiles on Render.
+    Talks directly to Postgres to map the missing tables.
+    """
+    print("🚀 Running immediate raw database table creation sequence...")
+    
+    # Simple sanity safety wrapper
+    with connection.cursor() as cursor:
+        try:
+            # 1. Inject the core Product model structure 
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS "myapp_product" (
+                    "id" bigserial NOT NULL PRIMARY KEY,
+                    "title" varchar(255) NOT NULL,
+                    "description" text NOT NULL,
+                    "price" numeric(12, 2) NOT NULL,
+                    "condition" varchar(10) NOT NULL,
+                    "stock_count" integer NOT NULL CHECK ("stock_count" >= 0),
+                    "item_location" varchar(10) NOT NULL,
+                    "seller_location_details" varchar(255) NOT NULL,
+                    "created_at" timestamptz NOT NULL,
+                    "seller_id" integer NOT NULL
+                );
+            """)
+            
+            # 2. Attach the User profile link constraint index safely
+            cursor.execute("""
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.table_constraints 
+                        WHERE constraint_name = 'myapp_product_seller_id_fk_auth_user_id'
+                    ) THEN
+                        ALTER TABLE "myapp_product" 
+                        ADD CONSTRAINT "myapp_product_seller_id_fk_auth_user_id" 
+                        FOREIGN KEY ("seller_id") REFERENCES "auth_user" ("id") 
+                        DEFERRABLE INITIALLY DEFERRED;
+                    END IF;
+                END $$;
+            """)
+            
+            # 3. Inject the Photo storage model table structure
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS "myapp_photo" (
+                    "id" bigserial NOT NULL PRIMARY KEY,
+                    "image" varchar(255) NOT NULL,
+                    "created_at" timestamptz NOT NULL,
+                    "product_id" bigint NULL
+                );
+            """)
+            
+            # 4. Attach the Photo to Product relationship link index
+            cursor.execute("""
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.table_constraints 
+                        WHERE constraint_name = 'myapp_photo_product_id_fk_myapp_product_id'
+                    ) THEN
+                        ALTER TABLE "myapp_photo" 
+                        ADD CONSTRAINT "myapp_photo_product_id_fk_myapp_product_id" 
+                        FOREIGN KEY ("product_id") REFERENCES "myapp_product" ("id") 
+                        DEFERRABLE INITIALLY DEFERRED;
+                    END IF;
+                END $$;
+            """)
+            print("======== ✅ DATABASE TABLES SUCCESSFULLY FORCED ON INIT ======== ")
+        except Exception as e:
+            print(f"⚠️ Table execution bypass or tracking notice: {e}")
+
+# Run it immediately on application bootstrap
+execute_immediate_table_sync()
+
 
 
 load_dotenv()
