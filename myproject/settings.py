@@ -8,24 +8,6 @@ load_dotenv()
 
 
 
-
-
-
-from django.db.models.signals import post_migrate
-
-def force_sync_database_tables(sender, **kwargs):
-    from django.core.management import call_command
-    print("🚀 Triggering deep database table auto-generation routine...")
-    try:
-        call_command('makemigrations', 'myapp', interactive=False)
-        call_command('migrate', 'myapp', interactive=False)
-    except Exception as e:
-        print(f"⚠️ Initialization bypass notice: {e}")
-
-
-
-
-
 # =====================================================================
 # EMERGENCY DATABASE FORCE-SYNC (BROWSER-ONLY CONFIGURATION)
 # =====================================================================
