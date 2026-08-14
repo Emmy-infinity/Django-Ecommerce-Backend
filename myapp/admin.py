@@ -1,42 +1,47 @@
-# admin.py
-# myapp/admin.py
-from django.contrib import admin
-from unfold.admin import ModelAdmin, TabularInline # 🧠 USE THESE INSTEAD
-from .models import Product, Photo
-
-class PhotoInline(TabularInline): # Elegant responsive inline inputs
-    model = Photo
-    extra = 3
-
-@admin.register(Product)
-class ProductAdmin(ModelAdmin): # Inherits clean Tailwind CSS styling
-    list_display = ['title', 'price', 'condition', 'item_location', 'seller']
-    list_filter = ['condition', 'item_location']
-    search_fields = ['title', 'description']
-    inlines = [PhotoInline]
-
 # Open your local project ──> myapp/admin.py
 
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from unfold.admin import ModelAdmin
-from unfold.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.forms import AdminPasswordChangeForm # 🌟 CRITICAL ALIGNMENT HOOK
+from unfold.forms import UserChangeForm, UserCreationForm, AdminPasswordChangeForm
+from .models import Product, Photo, PaymentTransaction, Note, SensorReading, StockMarketReading
 
-# 1. Unregister the built-in standard User admin layout safely
-admin.site.unregister(User)
+# 🚀 FORCE-UNREGISTER BUILT-IN USER CONFIGURATIONS
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
 
-# 2. Re-register the User model using Unfold's premium Tailwind layout configuration
+# 🚀 RE-REGISTER SYSTEM USER USING EXPLICIT ENFOLD PASSTHROUGHS
 @admin.register(User)
 class UserAdmin(BaseUserAdmin, ModelAdmin):
-    # Overwrites default input structures with responsive components
     form = UserChangeForm
     add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm # Handles password token rendering
     
-    # 🌟 THE ABSOLUTE OVERRIDE FOR THE CRYPTOGRAPHIC FIELDS (PASTE BOTH LINES)
-    change_password_form = AdminPasswordChangeForm
-    
-    # Enforce field validation arrays to align components cleanly inside Unfold's views
+    # Mirror the default core layouts cleanly inside Unfold's Tailwind templates
     fieldsets = BaseUserAdmin.fieldsets
     add_fieldsets = BaseUserAdmin.add_fieldsets
+
+
+# 🚀 REGISTER YOUR COMMERCIAL APPLIANCE LAYOUTS BEAUTIFULLY
+@admin.register(Product)
+class ProductAdmin(ModelAdmin):
+    list_display = ['title', 'price', 'item_location', 'weight', 'is_featured', 'created_at']
+    list_filter = ['item_location', 'condition', 'is_featured']
+    search_fields = ['title', 'description']
+
+@admin.register(Photo)
+class PhotoAdmin(ModelAdmin):
+    list_display = ['product', 'created_at']
+
+@admin.register(PaymentTransaction)
+class PaymentTransactionAdmin(ModelAdmin):
+    list_display = ['tx_ref', 'product', 'amount', 'status', 'created_at']
+    list_filter = ['status']
+
+# Simple default views for secondary tracking components
+admin.site.register(Note)
+admin.site.register(SensorReading)
+admin.site.register(StockMarketReading)
