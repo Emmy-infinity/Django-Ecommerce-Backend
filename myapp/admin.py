@@ -17,22 +17,26 @@ class ProductAdmin(ModelAdmin): # Inherits clean Tailwind CSS styling
 
 # Open your local project ──> myapp/admin.py
 
+from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from unfold.admin import ModelAdmin
 from unfold.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.forms import AdminPasswordChangeForm # 🌟 ADD THIS COMPATIBILITY IMPORT
+from django.contrib.auth.forms import AdminPasswordChangeForm # 🌟 CRITICAL ALIGNMENT HOOK
 
-# 1. Unregister the built-in standard User admin layout
+# 1. Unregister the built-in standard User admin layout safely
 admin.site.unregister(User)
 
-# 2. Re-register the User model using Unfold's premium Tailwind layout classes
+# 2. Re-register the User model using Unfold's premium Tailwind layout configuration
 @admin.register(User)
 class UserAdmin(BaseUserAdmin, ModelAdmin):
-    # This securely overrides the input layouts with Tailwind components
+    # Overwrites default input structures with responsive components
     form = UserChangeForm
     add_form = UserCreationForm
     
-    # 🌟 CORRECTION: Enforce the dedicated admin password form structure
-    change_password_form = AdminPasswordChangeForm 
-
+    # 🌟 THE ABSOLUTE OVERRIDE FOR THE CRYPTOGRAPHIC FIELDS (PASTE BOTH LINES)
+    change_password_form = AdminPasswordChangeForm
+    
+    # Enforce field validation arrays to align components cleanly inside Unfold's views
+    fieldsets = BaseUserAdmin.fieldsets
+    add_fieldsets = BaseUserAdmin.add_fieldsets
